@@ -1,0 +1,7 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {sendFriendRequest,acceptIncomingFriend,removeFriend,createReport,applyModeration,upsertSubmission} from '../src/stateActions.js';
+const make=()=>({friends:[],requests:['incoming'],outgoingRequests:[],moderation:[],blocked:[],submissions:[]});
+test('outgoing and incoming requests remain separate and sender cannot self-approve',()=>{const state=make();assert.equal(sendFriendRequest(state,'outgoing'),true);assert.deepEqual(state.requests,['incoming']);assert.equal(acceptIncomingFriend(state,'outgoing'),false);assert.equal(acceptIncomingFriend(state,'incoming'),true);assert.deepEqual(state.friends,['incoming']);});
+test('friend removal and moderation mutate actual target state',()=>{const state=make();state.friends=['x'];removeFriend(state,'x');assert.deepEqual(state.friends,[]);const report=createReport(state,{id:'r1',target:'bad-user',targetKind:'account',context:'chat:m1',date:'2026-01-01'});assert.equal(report.id,'r1');applyModeration(state,'r1','ban');assert.equal(report.status,'closed');assert.deepEqual(state.blocked,['bad-user']);});
+test('submission persists complete pre-approval contract',()=>{const state=make(),submission=upsertSubmission(state,'g1',{ownerId:'u1',status:'submitted',url:'https://game.example',ageRating:'13+',sdkPassed:true});assert.deepEqual(submission,{id:'g1',ownerId:'u1',status:'submitted',url:'https://game.example',ageRating:'13+',sdkPassed:true});});
