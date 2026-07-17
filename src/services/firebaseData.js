@@ -11,6 +11,12 @@ async function getServices() {
 }
 
 export const firebaseData = {
+  async loadOwnProfile(uid) {
+    const s=await getServices(); if(!s)return null;
+    const { getDoc, doc }=s.firestore;
+    const [profile,identity,preferences]=await Promise.all([getDoc(doc(s.db,'users',uid)),getDoc(doc(s.db,'users',uid,'private','identity')),getDoc(doc(s.db,'users',uid,'preferences','main'))]);
+    return { profile:profile.exists()?profile.data():null, identity:identity.exists()?identity.data():null, preferences:preferences.exists()?preferences.data():null };
+  },
   async saveProfile(user) {
     const s=await getServices(); if(!s)return;
     const { setDoc, doc, serverTimestamp }=s.firestore;

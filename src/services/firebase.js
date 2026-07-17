@@ -35,8 +35,9 @@ export const firebaseAuth = {
     return import('firebase/auth').then(({ onAuthStateChanged }) => onAuthStateChanged(auth, async user => {
       if (!user) return callback(null);
       const token = await user.getIdTokenResult();
-      callback({ id: user.uid, email: user.email, displayName: user.displayName, role: token.claims.admin === true ? 'admin' : 'user' });
+      callback({ id: user.uid, email: user.email, displayName: user.displayName, emailVerified: user.emailVerified === true, role: token.claims.admin === true ? 'admin' : 'user' });
     }));
   },
+  async sendVerification() { const { sendEmailVerification }=await import('firebase/auth'); if(!auth?.currentUser)throw new Error('Sign in first'); return sendEmailVerification(auth.currentUser); },
   async logout() { const { signOut }=await import('firebase/auth'); return signOut(auth); }
 };
