@@ -1,0 +1,46 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+        env:
+          # Firebase web config is a public client identifier by design.
+          VITE_FIREBASE_API_KEY: AIzaSyAaTuELH_mToxH3hRJ4WPIVTECSH7Z8-FY
+          VITE_FIREBASE_AUTH_DOMAIN: gzowos-games.firebaseapp.com
+          VITE_FIREBASE_PROJECT_ID: gzowos-games
+          VITE_FIREBASE_DATABASE_URL: https://gzowos-games-default-rtdb.europe-west1.firebasedatabase.app
+          VITE_FIREBASE_STORAGE_BUCKET: gzowos-games.firebasestorage.app
+          VITE_FIREBASE_APP_ID: 1:658227201482:web:1762933788fd0885c4bb33
+          VITE_GG_API_URL: https://gzowos-games-api.netlify.app
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deployment
+        uses: actions/deploy-pages@v4
