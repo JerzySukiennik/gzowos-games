@@ -1,0 +1,11 @@
+[build]
+  publish = "netlify/public"
+  command = ""
+
+[build.environment]
+  # firebase-admin -> jwks-rsa require()s ESM jose; needs Node 22 (require-ESM support).
+  AWS_LAMBDA_JS_RUNTIME = "nodejs22.x"
+  NODE_VERSION = "22"
+
+[functions]
+  node_bundler = "esbuild"
