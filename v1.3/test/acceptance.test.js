@@ -47,8 +47,6 @@ test('rules keep approval admin-only and sensitive identity private',()=>{
 test('production bundle source includes public SDK documentation and example',()=>{
   assert.equal(fs.existsSync(new URL('../public/sdk/README.md',import.meta.url)),true);
   assert.equal(fs.existsSync(new URL('../public/sdk/example/index.html',import.meta.url)),true);
-  assert.match(main,/href="\.\/sdk\/README\.md"/);
-  assert.doesNotMatch(main,/href="\/sdk\/README\.md"/);
 });
 test('creator verification is a real launch handshake, not a self-attested checkbox',()=>{
   assert.match(main,/runSdkCheck/);

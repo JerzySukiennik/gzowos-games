@@ -28,7 +28,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
-      - run: npm run build:pages
+      - run: npm run build
         env:
           # Firebase web config is a public client identifier by design.
           VITE_FIREBASE_API_KEY: AIzaSyAaTuELH_mToxH3hRJ4WPIVTECSH7Z8-FY

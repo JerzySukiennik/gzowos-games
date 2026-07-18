@@ -1,0 +1,7 @@
+{
+  "name": "@gzowos-games/sdk",
+  "version": "2.0.0",
+  "type": "module",
+  "license": "MIT",
+  "exports": "./src/index.js"
+}
